@@ -26,7 +26,6 @@ express()
       } else {
         response.send(res)
       }
-      pool.end()
     })
   })
   .listen(PORT, () => console.log(`Listening on ${ PORT }`))
