@@ -7,4 +7,8 @@ express()
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
   .get('/', (req, res) => res.render('pages/index'))
+  .get('/endpoint', (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify({'memebot': true}));
+  })
   .listen(PORT, () => console.log(`Listening on ${ PORT }`))
