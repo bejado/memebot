@@ -4,6 +4,8 @@ const PORT = process.env.PORT || 5000
 
 const pg = require('pg')
 
+var pool = new pg.Pool()
+
 express()
   .use(express.static(path.join(__dirname, 'public')))
   .set('views', path.join(__dirname, 'views'))
@@ -13,8 +15,8 @@ express()
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify({'memebot': true}));
   })
-  .get('/db', function (req, res) => {
-    pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+  .get('/db', (req, res) => {
+    pool.connect(process.env.DATABASE_URL, function(err, client, done) {
       client.query('SELECT * FROM test_table', function(err, result) {
         done();
         if (err) {
