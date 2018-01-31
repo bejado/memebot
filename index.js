@@ -19,13 +19,14 @@ express()
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify({'memebot': true}));
   })
-  .get('/db', (req, response) => {
-    pool.query('SELECT NOW()', (err, res) => {
-      console.log(err, res)
+  .get('/db', (req, res) => {
+    pool.query('SELECT * FROM test_table', (err, result) => {
+      console.log(err, result)
       if (err) {
-        response.send(err)
+        console.error(err)
+        res.send(err)
       } else {
-        response.send(res)
+        res.render('pages/db', {results: result.rows});
       }
     })
   })
