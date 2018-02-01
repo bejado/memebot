@@ -25,7 +25,7 @@ express()
     }, (error) => {
       res.status(400);
       res.type('json')
-      res.send(`{error: "${error}"}`);
+      res.send(JSON.stringify({'error': error}))
     });
   })
   .post('/job', (req, res) => {
