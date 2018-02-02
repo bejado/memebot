@@ -16,10 +16,14 @@ open.then(function(conn) {
         const message = msg.content.toString()
         console.log('Processing message: ' + message);
         const hash = crypto.createHash('md5').update(message).digest('hex')
-        const localPath = generateVideo(message, hash)
-        uploadToS3(hash, localPath).then(function(url) {
-          updateJob(hash, 'complete', url).then(() => {
-            console.log(`Job ${hash} status set to complete`)
+        generateVideo(message, hash).then((localPath) => {
+          uploadToS3(hash + '.mp4', localPath).then(function(url) {
+            updateJob(hash, 'complete', url).then(() => {
+              console.log(`Job ${hash} status set to complete`)
+            })
+          }, function(err) {
+            console.error(err)
+            console.error('Error uploading to S3')
           })
         })
         ch.ack(msg);

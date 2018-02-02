@@ -15,8 +15,8 @@ function uploadToS3(key, localFileName) {
   return s3.upload(params).promise().then(function(data) {
     console.log(`Upload to S3 successful: ${data.Location}`)
     return data.Location;
-  }, function() {
-    console.error(err)
+  }, function(err) {
+    throw err;
   });
 }
 

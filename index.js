@@ -21,7 +21,8 @@ express()
     getJobStatus(job_id).then((result) => {
       res.status(200);
       res.type('json')
-      res.send(JSON.stringify(result));
+      // res.send(JSON.stringify(result));
+      res.send(JSON.stringify({'status': 'pending'}));
     }, (error) => {
       res.status(400);
       res.type('json')

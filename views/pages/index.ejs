@@ -2,10 +2,64 @@
 <html>
 <head>
   <% include ../partials/header.ejs %>
+
+  <script type="text/javascript">
+    const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+    function enqueueJob(message) {
+      const opts = { message };
+      return fetch('/job', {
+        method: 'post',
+        body: JSON.stringify(opts),
+        headers: new Headers({
+          'Content-Type': 'application/json'
+        })
+      }).then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          // Assumes that a bad response is in text format
+          return response.text().then((reason) => {
+            throw Error(reason)
+          });
+        }
+      });
+    }
+
+    function checkOnJob(id) {
+      return fetch(`/job/${id}`)
+        .then(response => response.json())
+    }
+
+    function repeatedlyCheckOnJob(id, ms) {
+      // Check every second
+      return checkOnJob(id).then((response) => {
+        if (response.status === 'complete') {
+          console.log('Job is complete!')
+          return response.url;
+        } else {
+          console.log('Job is not complete')
+          return wait(ms).then(() => repeatedlyCheckOnJob(id, ms * 2))
+        }
+      })
+    }
+
+    function goClicked() {
+      const message = document.getElementById('message').value;
+      const resultsElement = document.getElementById('results');
+      enqueueJob(message).then((data) => {
+        alert(`success! job: ${data.id}`)
+        repeatedlyCheckOnJob(data.id, 300).then((url) => {
+          alert(`url: ${url}`)
+        });
+      }, (error) => {
+        alert(`error: ${error}`)
+      });
+    }
+  </script>
 </head>
 
 <body>
-
 <div class="jumbotron text-center">
   <div class="container">
     <h1>Meme Bot</h1>
@@ -14,7 +68,9 @@
 <div class="container">
   <div class="row"></div> <!-- row -->
     <p>Create a meme video.</p>
-    <a type="button" class="btn btn-lg btn-default" href="">Go!</a>
+    <input id="message" type="text"></input>
+    <a type="button" class="btn btn-lg btn-default" onclick="goClicked()">Go!</a>
+    <p id="results"></p>
 </div>
 </body>
 </html>
