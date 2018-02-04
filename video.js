@@ -12,7 +12,7 @@ if (!fs.existsSync(tempDirectory)){
 function generateVideo(youtubeLink, id) {
   return new Promise((resolve, reject) => {
     const finalPath = path.join('generated', id + '.mp4')
-    const process = spawn('ffmpeg_testing/test_script.sh', [id, youtubeLink], { stdio: 'inherit' })
+    const process = spawn('video_scripts/generate_video.sh', [id, youtubeLink], { stdio: 'inherit' })
     process.on('exit', () => {
       resolve(finalPath)
     })
