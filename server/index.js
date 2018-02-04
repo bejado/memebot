@@ -11,12 +11,11 @@ const open = require('amqplib').connect(url);
 const queue = 'tasks';
 
 express()
-  .use(express.static(path.join(__dirname, 'public')))
+  .use(express.static(path.resolve(__dirname, '../react-ui/build')))
   .use(bodyParser.json())
-  .set('views', path.join(__dirname, 'views'))
-  .set('view engine', 'ejs')
-  .get('/', (req, res) => res.render('pages/index'))
-  .get('/job/:job_id', (req, res) => {
+
+  // api
+  .get('/api/job/:job_id', (req, res) => {
     const job_id = req.params.job_id
     getJobStatus(job_id).then((result) => {
       res.status(200);
@@ -28,7 +27,7 @@ express()
       res.send(JSON.stringify({'error': error}))
     });
   })
-  .post('/job', (req, res) => {
+  .post('/api/job', (req, res) => {
     if (!req.body.message) {
       res.status(400);
       res.send('A message is required');
@@ -56,5 +55,11 @@ express()
       res.status(500);
       res.send('Something broke!');
     });
+  })
+
+  // Remaining requests directly to React for routing
+  .get('*', function (req, res) {
+    console.log('catch all')
+    res.sendFile(path.resolve(__dirname, '../react-ui/build', 'index.html'));
   })
   .listen(PORT, () => console.log(`Listening on ${ PORT }`))
