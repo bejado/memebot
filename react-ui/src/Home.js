@@ -1,7 +1,7 @@
 import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { updateJobInput } from './modules/jobs'
+import { updateJobInput, submitJob } from './modules/jobs'
 
 const Home = props => (
   <div className="App">
@@ -12,6 +12,7 @@ const Home = props => (
       Input a YouTube video URL:
     </p>
     <input type="text" value={props.inputValue} onChange={(e) => props.handleInputChange(e.target.value)} />
+    <button onClick={props.submitJob}>Go!</button>
   </div>
 )
 
@@ -20,7 +21,8 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  handleInputChange: (input) => updateJobInput(input)
+  handleInputChange: (input) => updateJobInput(input),
+  submitJob: () => submitJob()
 }, dispatch)
 
 export default connect(
