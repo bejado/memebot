@@ -27,7 +27,7 @@ export const updateJobInput = input => {
   };
 };
 
-const postJob = message => {
+const postJobStart = message => {
   return {
     type: POST_JOB,
     message: message
@@ -61,17 +61,21 @@ const jobCompleted = url => {
   };
 };
 
+const postJob = message => {
+  const opts = { message };
+  return fetch('/api/job', {
+    method: 'post',
+    body: JSON.stringify(opts),
+    headers: new Headers({
+      'Content-Type': 'application/json'
+    })
+  });
+};
+
 export const enqueueJob = (message = '') => {
   return dispatch => {
-    dispatch(postJob(message));
-    const opts = { message };
-    return fetch('/api/job', {
-      method: 'post',
-      body: JSON.stringify(opts),
-      headers: new Headers({
-        'Content-Type': 'application/json'
-      })
-    }).then(response => {
+    dispatch(postJobStart(message));
+    return postJob(message).then(response => {
       if (response.ok) {
         return response.json().then(jsonResponse => {
           dispatch(postJobSuccess(jsonResponse));
