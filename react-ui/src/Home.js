@@ -13,11 +13,15 @@ const Home = props => (
     </p>
     <input type="text" value={props.inputValue} onChange={(e) => props.handleInputChange(e.target.value)} />
     <button onClick={() => props.enqueueJob(props.inputValue)}>Go!</button>
+    { props.videoUrl ?
+        <video src={props.videoUrl} controls autoPlay /> :
+        undefined }
   </div>
 )
 
 const mapStateToProps = state => ({
-  inputValue: state.jobs.jobInput
+  inputValue: state.jobs.jobInput,
+  videoUrl: state.jobs.jobUrl
 })
 
 const mapDispatchToProps = dispatch => {
