@@ -1,12 +1,12 @@
 export const UPDATE_JOB_INPUT = 'jobs/UPDATE_JOB_INPUT';
 export const ENQUEUE_JOB = 'jobs/ENQUEUE_JOB';
 
-const POST_JOB = 'jobs/POST_JOB';
-const POST_JOB_SUCCESS = 'jobs/POST_JOB_SUCCESS';
-const POST_JOB_FAILURE = 'jobs/POST_JOB_FAILURE';
+export const POST_JOB = 'jobs/POST_JOB';
+export const POST_JOB_SUCCESS = 'jobs/POST_JOB_SUCCESS';
+export const POST_JOB_FAILURE = 'jobs/POST_JOB_FAILURE';
 
-const POLLING_JOB = 'jobs/POLLING_JOB';
-const JOB_COMPLETED = 'jobs/JOB_COMPLETED';
+export const POLLING_JOB = 'jobs/POLLING_JOB';
+export const JOB_COMPLETED = 'jobs/JOB_COMPLETED';
 
 // Mock our endpoints for easier frontend development if the REACT_APP_MOCK_SERVER env var is set
 if (process.env.REACT_APP_MOCK_SERVER) {
@@ -81,6 +81,7 @@ export const enqueueJob = (message = '') => {
         // Assumes that a bad response is in text format
         return response.text().then(reason => {
           dispatch(postJobFailure(reason));
+          throw reason;
         });
       }
     });

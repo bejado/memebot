@@ -21,11 +21,20 @@ const Home = props => (
     <button onClick={() => props.enqueueJob(props.inputValue)}>Go!</button>
     {props.shouldShowLoading ? <div>Loading...</div> : null}
     {props.videoUrl ? <video src={props.videoUrl} controls autoPlay /> : null}
+    {props.error ? (
+      <div>
+        <p>
+          Whoops. An error occurred :/<br />Try again later
+        </p>
+        <p>{props.error}</p>
+      </div>
+    ) : null}
   </div>
 );
 
 const mapStateToProps = state => ({
   inputValue: state.jobs.jobInput,
+  error: state.jobs.submissionError,
   shouldShowLoading:
     state.jobs.submissionInProgress ||
     (state.jobs.submissionSuccess && !state.jobs.jobUrl) ||
@@ -37,8 +46,9 @@ const mapDispatchToProps = dispatch => {
   return {
     handleInputChange: input => dispatch(updateJobInput(input)),
     enqueueJob: message => {
-      dispatch(enqueueJob(message)).then(id =>
-        dispatch(pollForJobCompletion(id))
+      dispatch(enqueueJob(message)).then(
+        id => dispatch(pollForJobCompletion(id)),
+        err => console.error('An error occurred submitting the job')
       );
     }
   };
