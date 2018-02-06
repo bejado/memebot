@@ -13,14 +13,16 @@ const Home = props => (
     </p>
     <input type="text" value={props.inputValue} onChange={(e) => props.handleInputChange(e.target.value)} />
     <button onClick={() => props.enqueueJob(props.inputValue)}>Go!</button>
+    { props.shouldShowLoading ? <div>Loading...</div> : null }
     { props.videoUrl ?
         <video src={props.videoUrl} controls autoPlay /> :
-        undefined }
+        null }
   </div>
 )
 
 const mapStateToProps = state => ({
   inputValue: state.jobs.jobInput,
+  shouldShowLoading: state.jobs.submissionInProgress || (state.jobs.submissionSuccess && !state.jobs.jobUrl) || state.jobs.pollingForJobCompletion,
   videoUrl: state.jobs.jobUrl
 })
 
