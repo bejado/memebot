@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # $1- result name
 # $2- youtube video link
+# $3- youtube link start time
 
 set -e
 
@@ -43,7 +44,7 @@ youtube-dl -f mp4 -o "$youtubeOutput" "$2"
 # Combine the videos
 ${DIR}/combine.sh \
     "${DIR}/../video_sources/one_thing_to_say.mp4" 0 7.4 \
-    "${youtubeOutput}" 38 3.5 \
+    "${youtubeOutput}" ${3:-38} 3.5 \
     "${1}.mp4"
 
 popd
