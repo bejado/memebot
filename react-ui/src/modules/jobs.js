@@ -8,6 +8,11 @@ const POST_JOB_FAILURE = 'jobs/POST_JOB_FAILURE';
 const POLLING_JOB = 'jobs/POLLING_JOB';
 const JOB_COMPLETED = 'jobs/JOB_COMPLETED';
 
+// Mock our endpoints for easier frontend development if the REACT_APP_MOCK_SERVER env var is set
+if (process.env.REACT_APP_MOCK_SERVER) {
+  require('./mock_jobs.js');
+}
+
 const initialState = {
   jobInput: '',
   submissionInProgress: false
