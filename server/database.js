@@ -1,22 +1,25 @@
-const { Pool, Client } = require('pg')
-const connectionString = process.env.DATABASE_URL
+const { Pool, Client } = require('pg');
+const connectionString = process.env.DATABASE_URL;
 
 const pool = new Pool({
   connectionString: connectionString,
-  ssl: true,  // necessary for local development
-})
+  ssl: true // necessary for local development
+});
 
 function getJobStatus(id) {
   const statement = 'SELECT * FROM jobs WHERE id = $1';
-  return pool.query(statement, [id]).then((result) => {
-    if (result.rows.length < 1) {
-      throw 'JobNotFound'
+  return pool.query(statement, [id]).then(
+    result => {
+      if (result.rows.length < 1) {
+        throw 'JobNotFound';
+      }
+      return result.rows[0];
+    },
+    err => {
+      // not sure what to do here?
+      throw err;
     }
-    return result.rows[0]
-  }, (err) => {
-    // not sure what to do here?
-    throw err;
-  })
+  );
 }
 
 function updateJob(id, newStatus, url) {
@@ -25,9 +28,8 @@ function updateJob(id, newStatus, url) {
 }
 
 function createJob(id) {
-  const statement = 'INSERT INTO jobs VALUES($1, $2, $3)'
+  const statement = 'INSERT INTO jobs VALUES($1, $2, $3)';
   return pool.query(statement, [id, 'pending', '']);
 }
 
-module.exports = { createJob, updateJob, getJobStatus }
-
+module.exports = { createJob, updateJob, getJobStatus };

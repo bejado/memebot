@@ -1,25 +1,28 @@
-const fs = require('fs')
-const path = require('path')
-const url = require('url')
-const { spawn } = require('child_process')
+const fs = require('fs');
+const path = require('path');
+const url = require('url');
+const { spawn } = require('child_process');
 
-const tempDirectory = 'generated'
+const tempDirectory = 'generated';
 
 // Create the temporary directory
-if (!fs.existsSync(tempDirectory)){
-    fs.mkdirSync(tempDirectory);
+if (!fs.existsSync(tempDirectory)) {
+  fs.mkdirSync(tempDirectory);
 }
 
 function generateVideo(youtubeLink, id) {
   return new Promise((resolve, reject) => {
-    const finalPath = path.join('generated', id + '.mp4')
-    const startTime = url.parse(youtubeLink, true).query.t || 0
-    const process = spawn('video_scripts/generate_video.sh', [id, youtubeLink, startTime], { stdio: 'inherit' })
+    const finalPath = path.join('generated', id + '.mp4');
+    const startTime = url.parse(youtubeLink, true).query.t || 0;
+    const process = spawn(
+      'video_scripts/generate_video.sh',
+      [id, youtubeLink, startTime],
+      { stdio: 'inherit' }
+    );
     process.on('exit', () => {
-      resolve(finalPath)
-    })
-  })
+      resolve(finalPath);
+    });
+  });
 }
 
-module.exports = { generateVideo }
-
+module.exports = { generateVideo };
