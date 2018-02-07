@@ -128,6 +128,7 @@ export default (state = initialState, action) => {
     case POST_JOB:
       return {
         ...state,
+        jobInput: '',
         submissionInProgress: true
       };
 
