@@ -61,9 +61,9 @@ const jobCompleted = url => {
   };
 };
 
-const postJob = message => {
+const postJob = async message => {
   const opts = { message };
-  return fetch('/api/job', {
+  return await fetch('/api/job', {
     method: 'post',
     body: JSON.stringify(opts),
     headers: new Headers({
@@ -73,22 +73,18 @@ const postJob = message => {
 };
 
 export const enqueueJob = (message = '') => {
-  return dispatch => {
+  return async dispatch => {
     dispatch(postJobStart(message));
-    return postJob(message).then(response => {
-      if (response.ok) {
-        return response.json().then(jsonResponse => {
-          dispatch(postJobSuccess(jsonResponse));
-          return jsonResponse.id;
-        });
-      } else {
-        // Assumes that a bad response is in text format
-        return response.text().then(reason => {
-          dispatch(postJobFailure(reason));
-          throw reason;
-        });
-      }
-    });
+    const response = await postJob(message);
+    if (response.ok) {
+      const responseJson = await response.json();
+      dispatch(postJobSuccess(responseJson));
+      return responseJson.id;
+    } else {
+      const reason = await response.text();
+      dispatch(postJobFailure(reason));
+      throw reason;
+    }
   };
 };
 

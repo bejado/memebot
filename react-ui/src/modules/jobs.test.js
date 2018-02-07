@@ -1,5 +1,10 @@
 import fetchMock from 'fetch-mock';
-import jobReducer, { enqueueJob, POST_JOB, POST_JOB_SUCCESS } from './jobs';
+import jobReducer, {
+  enqueueJob,
+  POST_JOB,
+  POST_JOB_SUCCESS,
+  POST_JOB_FAILURE
+} from './jobs';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
@@ -30,6 +35,30 @@ describe('async job actions', () => {
     return store.dispatch(enqueueJob('test message')).then(() => {
       expect(store.getActions()).toEqual(expectedActions);
     });
+  });
+
+  it('creates POST_JOB and POST_JOB_FAILURE when server returns a 400', () => {
+    fetchMock.postOnce('/api/job', {
+      body: 'A message is required',
+      status: 400
+    });
+
+    const expectedActions = [
+      { type: POST_JOB, message: 'invalid message' },
+      {
+        type: POST_JOB_FAILURE,
+        reason: 'A message is required'
+      }
+    ];
+
+    const store = mockStore({});
+    return store.dispatch(enqueueJob('invalid message')).then(
+      () => {},
+      reason => {
+        expect(store.getActions()).toEqual(expectedActions);
+        expect(reason).toEqual('A message is required');
+      }
+    );
   });
 });
 
