@@ -1,7 +1,10 @@
 const fetchMock = require('fetch-mock');
 
+// Configuration
 const mockHash = 'abcdef';
 const serverDelay = 500;
+const callsToGetJob = 5;
+const shouldFailToGetJob = true;
 
 const successAfterDelay = toReturn => {
   return new Promise((resolve, reject) => {
@@ -36,11 +39,26 @@ fetchMock.post('/api/job', (url, opts) => {
 });
 
 // GET /api/job/:jobId
+let getJobCount = callsToGetJob;
 fetchMock.get(`/api/job/${mockHash}`, () => {
-  return successAfterDelay({
-    status: 'complete',
-    id: mockHash,
-    url:
-      'https://s3-us-west-1.amazonaws.com/protected-thicket-26158-storage/4a3b7ab590f0141561de93502aba5a96.mp4'
-  });
+  // Return pending the first 5 times, then completed job (or failure)
+  if (getJobCount === 0) {
+    if (shouldFailToGetJob) {
+      return errorAfterDelay(400, { error: 'Job does not exist' }, true);
+    } else {
+      return successAfterDelay({
+        status: 'complete',
+        id: mockHash,
+        url:
+          'https://s3-us-west-1.amazonaws.com/protected-thicket-26158-storage/4a3b7ab590f0141561de93502aba5a96.mp4'
+      });
+    }
+  } else {
+    getJobCount--;
+    return successAfterDelay({
+      status: 'pending',
+      id: mockHash,
+      url: ''
+    });
+  }
 });
