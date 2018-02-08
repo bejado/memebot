@@ -8,7 +8,7 @@ const processJob = message => {
     .createHash('md5')
     .update(message)
     .digest('hex');
-  generateVideo(message, hash).then(localPath => {
+  return generateVideo(message, hash).then(localPath => {
     uploadToS3(hash + '.mp4', localPath).then(
       function(url) {
         updateJob(hash, 'complete', url).then(() => {
