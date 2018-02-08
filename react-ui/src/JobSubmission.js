@@ -33,13 +33,12 @@ const Home = props => (
 );
 
 const mapStateToProps = state => ({
-  inputValue: state.jobSubmission.jobInput,
-  error: state.jobSubmission.submissionError,
+  inputValue: state.jobs.submission.messageInput,
+  error: state.jobs.submission.error,
   shouldShowLoading:
-    state.jobSubmission.submissionInProgress ||
-    (state.jobSubmission.submissionSuccess && !state.jobSubmission.jobUrl) ||
-    state.jobSubmission.pollingForJobCompletion,
-  videoUrl: state.jobSubmission.jobUrl
+    state.jobs.submission.submitting ||
+    (state.jobs.job ? state.jobs.job.polling : false),
+  videoUrl: state.jobs.job ? state.jobs.job.url : null
 });
 
 const mapDispatchToProps = dispatch => {

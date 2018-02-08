@@ -1,5 +1,4 @@
 export const UPDATE_JOB_INPUT = 'jobs/UPDATE_JOB_INPUT';
-export const ENQUEUE_JOB = 'jobs/ENQUEUE_JOB';
 
 export const POST_JOB = 'jobs/POST_JOB';
 export const POST_JOB_SUCCESS = 'jobs/POST_JOB_SUCCESS';
@@ -14,8 +13,12 @@ if (process.env.REACT_APP_MOCK_SERVER) {
 }
 
 const initialState = {
-  jobInput: '',
-  submissionInProgress: false
+  submission: {
+    messageInput: '',
+    submitting: false,
+    error: null
+  },
+  job: null
 };
 
 export const updateJobInput = input => {
@@ -118,43 +121,66 @@ export default (state = initialState, action) => {
     case UPDATE_JOB_INPUT:
       return {
         ...state,
-        jobInput: action.input
+        submission: {
+          ...state.submission,
+          messageInput: action.input
+        }
       };
 
     case POST_JOB:
       return {
         ...state,
-        jobInput: '',
-        submissionInProgress: true
+        submission: {
+          ...state.submission,
+          messageInput: '',
+          submitting: true,
+          error: null
+        }
       };
 
     case POST_JOB_SUCCESS:
       return {
         ...state,
-        submissionInProgress: false,
-        submissionSuccess: true,
-        submissionResults: action.response
+        submission: {
+          ...state.submission,
+          submitting: false,
+          error: null
+        },
+        job: {
+          id: action.response.id,
+          url: null,
+          polling: false,
+          error: null
+        }
       };
 
     case POST_JOB_FAILURE:
       return {
         ...state,
-        submissionInProgress: false,
-        submissionSuccess: false,
-        submissionError: action.reason
+        submission: {
+          ...state.submission,
+          submitting: false,
+          error: action.reason
+        }
       };
 
     case POLLING_JOB:
       return {
         ...state,
-        pollingForJobCompletion: true
+        job: {
+          ...state.job,
+          polling: true
+        }
       };
 
     case JOB_COMPLETED:
       return {
         ...state,
-        pollingForJobCompletion: false,
-        jobUrl: action.url
+        job: {
+          ...state.job,
+          url: action.url,
+          polling: false
+        }
       };
 
     default:
