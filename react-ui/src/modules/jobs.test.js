@@ -4,7 +4,7 @@ import jobReducer, {
   POST_JOB,
   POST_JOB_SUCCESS,
   POST_JOB_FAILURE
-} from './jobs';
+} from './jobSubmission';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 

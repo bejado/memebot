@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
 import { routerReducer } from 'react-router-redux';
-import jobsReducer from './jobs';
+import jobSubmissionReducer from './jobSubmission';
 
 export default combineReducers({
-  jobs: jobsReducer,
+  jobSubmission: jobSubmissionReducer,
   routing: routerReducer
 });

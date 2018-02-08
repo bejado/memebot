@@ -5,7 +5,7 @@ import {
   updateJobInput,
   enqueueJob,
   pollForJobCompletion
-} from './modules/jobs';
+} from './modules/jobSubmission';
 
 const Home = props => (
   <div className="App">
@@ -33,13 +33,13 @@ const Home = props => (
 );
 
 const mapStateToProps = state => ({
-  inputValue: state.jobs.jobInput,
-  error: state.jobs.submissionError,
+  inputValue: state.jobSubmission.jobInput,
+  error: state.jobSubmission.submissionError,
   shouldShowLoading:
-    state.jobs.submissionInProgress ||
-    (state.jobs.submissionSuccess && !state.jobs.jobUrl) ||
-    state.jobs.pollingForJobCompletion,
-  videoUrl: state.jobs.jobUrl
+    state.jobSubmission.submissionInProgress ||
+    (state.jobSubmission.submissionSuccess && !state.jobSubmission.jobUrl) ||
+    state.jobSubmission.pollingForJobCompletion,
+  videoUrl: state.jobSubmission.jobUrl
 });
 
 const mapDispatchToProps = dispatch => {

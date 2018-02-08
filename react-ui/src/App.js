@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Route, Link } from 'react-router-dom';
 import './App.css';
-import Home from './Home';
+import JobSubmission from './JobSubmission';
 
 const App = () => (
   <div>
     <main>
-      <Route exact path="/" component={Home} />
+      <Route exact path="/" component={JobSubmission} />
     </main>
   </div>
 );
