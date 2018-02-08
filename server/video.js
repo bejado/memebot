@@ -19,8 +19,13 @@ function generateVideo(youtubeLink, id) {
       [id, youtubeLink, startTime],
       { stdio: 'inherit' }
     );
-    process.on('exit', () => {
-      resolve(finalPath);
+    process.on('exit', code => {
+      if (code == 0) {
+        // success
+        resolve(finalPath);
+      } else {
+        reject({ error: 'The video generation script failed.' });
+      }
     });
   });
 }
