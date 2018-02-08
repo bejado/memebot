@@ -131,6 +131,37 @@ describe('job reducer', () => {
     });
   });
 
+  it('should handle POST_JOB and clear the previous job', () => {
+    expect(
+      jobReducer(
+        {
+          submission: {
+            messageInput: 'a message',
+            submitting: false,
+            error: null
+          },
+          job: {
+            id: 'defghi',
+            url: 'http://test.url',
+            polling: false,
+            error: null
+          }
+        },
+        {
+          type: POST_JOB,
+          message: 'a new message'
+        }
+      )
+    ).toEqual({
+      submission: {
+        messageInput: '', // messageInput should be cleared
+        submitting: true,
+        error: null
+      },
+      job: null // job should also be cleared
+    });
+  });
+
   it('should handle POST_JOB_SUCCESS', () => {
     expect(
       jobReducer(

@@ -135,7 +135,8 @@ export default (state = initialState, action) => {
           messageInput: '',
           submitting: true,
           error: null
-        }
+        },
+        job: null
       };
 
     case POST_JOB_SUCCESS:
