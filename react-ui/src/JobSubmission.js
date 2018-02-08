@@ -33,7 +33,9 @@ const Home = props => (
 
 const mapStateToProps = state => ({
   inputValue: state.jobs.submission.messageInput,
-  error: state.jobs.submission.error,
+  error:
+    (state.jobs.job ? state.jobs.job.error : null) ||
+    state.jobs.submission.error,
   shouldShowLoading:
     state.jobs.submission.submitting ||
     (state.jobs.job ? state.jobs.job.polling : false),

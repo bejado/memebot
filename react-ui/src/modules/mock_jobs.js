@@ -3,8 +3,8 @@ const fetchMock = require('fetch-mock');
 // Configuration
 const mockHash = 'abcdef';
 const serverDelay = 500;
-const callsToGetJob = 5;
-const shouldFailToGetJob = true;
+const callsToGetJob = 3;
+const shouldFailToGetJob = false;
 
 const successAfterDelay = toReturn => {
   return new Promise((resolve, reject) => {

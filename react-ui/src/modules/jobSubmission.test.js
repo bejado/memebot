@@ -1,11 +1,13 @@
 import fetchMock from 'fetch-mock';
 import jobReducer, {
   enqueueJob,
+  pollForJobCompletion,
   UPDATE_JOB_INPUT,
   POST_JOB,
   POST_JOB_SUCCESS,
   POST_JOB_FAILURE,
   POLLING_JOB,
+  POLLING_JOB_FAILURE,
   JOB_COMPLETED
 } from './jobSubmission';
 import configureMockStore from 'redux-mock-store';
@@ -60,6 +62,30 @@ describe('async job actions', () => {
       reason => {
         expect(store.getActions()).toEqual(expectedActions);
         expect(reason).toEqual('A message is required');
+      }
+    );
+  });
+
+  it('creates POLLING_JOB and POLLING_JOB_FAILURE when server returns a 400', () => {
+    fetchMock.getOnce('/api/job/abcdef', {
+      body: { error: 'Job does not exist' },
+      status: 400
+    });
+
+    const expectedActions = [
+      { type: POLLING_JOB },
+      {
+        type: POLLING_JOB_FAILURE,
+        reason: 'Job does not exist'
+      }
+    ];
+
+    const store = mockStore({});
+    return store.dispatch(pollForJobCompletion('abcdef')).then(
+      () => {},
+      reason => {
+        expect(store.getActions()).toEqual(expectedActions);
+        expect(reason).toEqual('Job does not exist');
       }
     );
   });
@@ -286,6 +312,42 @@ describe('job reducer', () => {
         url: 'http://test.url',
         polling: false,
         error: null
+      }
+    });
+  });
+
+  it('should handle POLLING_JOB_FAILURE', () => {
+    expect(
+      jobReducer(
+        {
+          submission: {
+            messageInput: '',
+            submitting: false,
+            error: null
+          },
+          job: {
+            id: 'abcdef',
+            url: null,
+            polling: true,
+            error: null
+          }
+        },
+        {
+          type: POLLING_JOB_FAILURE,
+          reason: 'Job does not exist'
+        }
+      )
+    ).toEqual({
+      submission: {
+        messageInput: '',
+        submitting: false,
+        error: null
+      },
+      job: {
+        id: 'abcdef',
+        url: null,
+        polling: false,
+        error: 'Job does not exist'
       }
     });
   });

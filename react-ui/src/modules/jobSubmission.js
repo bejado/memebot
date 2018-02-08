@@ -6,6 +6,7 @@ export const POST_JOB_FAILURE = 'jobs/POST_JOB_FAILURE';
 
 export const POLLING_JOB = 'jobs/POLLING_JOB';
 export const JOB_COMPLETED = 'jobs/JOB_COMPLETED';
+export const POLLING_JOB_FAILURE = 'jobs/POLLING_JOB_FAILURE';
 
 // Mock our endpoints for easier frontend development if the REACT_APP_MOCK_SERVER env var is set
 if (process.env.REACT_APP_MOCK_SERVER) {
@@ -64,6 +65,13 @@ const jobCompleted = url => {
   };
 };
 
+const pollingJobFailure = reason => {
+  return {
+    type: POLLING_JOB_FAILURE,
+    reason: reason
+  };
+};
+
 const postJob = async message => {
   const opts = { message };
   return await fetch('/api/job', {
@@ -94,25 +102,44 @@ export const enqueueJob = (message = '') => {
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 const getJob = id => {
-  return fetch(`/api/job/${id}`).then(response => response.json());
+  return fetch(`/api/job/${id}`).then(response => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      return response.json().then(jsonResponse => {
+        throw jsonResponse.error;
+      });
+    }
+  });
 };
 
 const pollJob = (id, ms = 300) => {
-  return getJob(id).then(response => {
-    if (response.status === 'complete') {
-      console.log('Job is complete!');
-      return response.url;
-    } else {
-      console.log('Job is not complete');
-      return wait(ms).then(() => pollJob(id, ms * 2));
+  return getJob(id).then(
+    response => {
+      if (response.status === 'complete') {
+        console.log('Job is complete!');
+        return response.url;
+      } else {
+        console.log('Job is not complete');
+        return wait(ms).then(() => pollJob(id, ms * 2));
+      }
+    },
+    error => {
+      throw error;
     }
-  });
+  );
 };
 
 export const pollForJobCompletion = id => {
   return dispatch => {
     dispatch(pollingJob(id));
-    return pollJob(id).then(resultUrl => dispatch(jobCompleted(resultUrl)));
+    return pollJob(id).then(
+      resultUrl => dispatch(jobCompleted(resultUrl)),
+      error => {
+        dispatch(pollingJobFailure(error));
+        throw error;
+      }
+    );
   };
 };
 
@@ -181,6 +208,16 @@ export default (state = initialState, action) => {
           ...state.job,
           url: action.url,
           polling: false
+        }
+      };
+
+    case POLLING_JOB_FAILURE:
+      return {
+        ...state,
+        job: {
+          ...state.job,
+          polling: false,
+          error: action.reason
         }
       };
 
