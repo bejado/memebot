@@ -56,4 +56,23 @@ describe('processJob', () => {
       expect(updateJobSpy).toHaveBeenCalledWith(mockHash, 'error', '');
     });
   });
+
+  test('updates the database to error state if uploading to S3 rejects', () => {
+    generateVideoSpy = jest
+      .spyOn(video, 'generateVideo')
+      .mockResolvedValue('local/path');
+    updateJobSpy = jest.spyOn(database, 'updateJob').mockResolvedValue();
+    uploadToS3Spy = jest
+      .spyOn(upload, 'uploadToS3')
+      .mockRejectedValue({ error: 'Error uploading to S3' });
+
+    return processJob('test message').then(() => {
+      expect(generateVideoSpy).toHaveBeenCalledWith('test message', mockHash);
+      expect(uploadToS3Spy).toHaveBeenCalledWith(
+        mockHash + '.mp4',
+        'local/path'
+      );
+      expect(updateJobSpy).toHaveBeenCalledWith(mockHash, 'error', '');
+    });
+  });
 });

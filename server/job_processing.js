@@ -19,6 +19,9 @@ const processJob = message => {
         function(err) {
           console.error(err);
           console.error('Error uploading to S3');
+          updateJob(hash, 'error', '').then(() => {
+            console.log(`Job ${hash} status set to error`);
+          });
         }
       );
     },
