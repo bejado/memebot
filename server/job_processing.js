@@ -8,19 +8,26 @@ const processJob = message => {
     .createHash('md5')
     .update(message)
     .digest('hex');
-  return generateVideo(message, hash).then(localPath => {
-    uploadToS3(hash + '.mp4', localPath).then(
-      function(url) {
-        updateJob(hash, 'complete', url).then(() => {
-          console.log(`Job ${hash} status set to complete`);
-        });
-      },
-      function(err) {
-        console.error(err);
-        console.error('Error uploading to S3');
-      }
-    );
-  });
+  return generateVideo(message, hash).then(
+    localPath => {
+      uploadToS3(hash + '.mp4', localPath).then(
+        function(url) {
+          updateJob(hash, 'complete', url).then(() => {
+            console.log(`Job ${hash} status set to complete`);
+          });
+        },
+        function(err) {
+          console.error(err);
+          console.error('Error uploading to S3');
+        }
+      );
+    },
+    error => {
+      updateJob(hash, 'error', '').then(() => {
+        console.log(`Job ${hash} status set to error`);
+      });
+    }
+  );
 };
 
 module.exports = { processJob };
