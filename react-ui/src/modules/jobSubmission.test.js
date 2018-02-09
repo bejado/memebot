@@ -66,6 +66,54 @@ describe('async job actions', () => {
     );
   });
 
+  it('creates POLLING_JOB and JOB_COMPLETED when server returns a 200', () => {
+    fetchMock.getOnce('/api/job/abcdef', {
+      body: { id: 'abcdef', status: 'complete', url: 'http://test.url' },
+      status: 200
+    });
+
+    const expectedActions = [
+      { type: POLLING_JOB },
+      {
+        type: JOB_COMPLETED,
+        job: {
+          id: 'abcdef',
+          status: 'complete',
+          url: 'http://test.url'
+        }
+      }
+    ];
+
+    const store = mockStore({});
+    return store.dispatch(pollForJobCompletion('abcdef')).then(() => {
+      expect(store.getActions()).toEqual(expectedActions);
+    });
+  });
+
+  it('creates POLLING_JOB and JOB_COMPLETED when the job has errored', () => {
+    fetchMock.getOnce('/api/job/abcdef', {
+      body: { id: 'abcdef', status: 'error', url: '' },
+      status: 200
+    });
+
+    const expectedActions = [
+      { type: POLLING_JOB },
+      {
+        type: JOB_COMPLETED,
+        job: {
+          id: 'abcdef',
+          status: 'error',
+          url: ''
+        }
+      }
+    ];
+
+    const store = mockStore({});
+    return store.dispatch(pollForJobCompletion('abcdef')).then(() => {
+      expect(store.getActions()).toEqual(expectedActions);
+    });
+  });
+
   it('creates POLLING_JOB and POLLING_JOB_FAILURE when server returns a 400', () => {
     fetchMock.getOnce('/api/job/abcdef', {
       body: { error: 'Job does not exist' },

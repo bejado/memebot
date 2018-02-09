@@ -5,6 +5,7 @@ const mockHash = 'abcdef';
 const serverDelay = 500;
 const callsToGetJob = 3;
 const shouldFailToGetJob = false;
+const shouldReturnErroredJob = true;
 
 const successAfterDelay = toReturn => {
   return new Promise((resolve, reject) => {
@@ -47,10 +48,11 @@ fetchMock.get(`/api/job/${mockHash}`, () => {
       return errorAfterDelay(400, { error: 'Job does not exist' }, true);
     } else {
       return successAfterDelay({
-        status: 'complete',
+        status: shouldReturnErroredJob ? 'error' : 'complete',
         id: mockHash,
-        url:
-          'https://s3-us-west-1.amazonaws.com/protected-thicket-26158-storage/4a3b7ab590f0141561de93502aba5a96.mp4'
+        url: shouldReturnErroredJob
+          ? ''
+          : 'https://s3-us-west-1.amazonaws.com/protected-thicket-26158-storage/4a3b7ab590f0141561de93502aba5a96.mp4'
       });
     }
   } else {

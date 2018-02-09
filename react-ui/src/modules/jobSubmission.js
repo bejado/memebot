@@ -58,10 +58,10 @@ const pollingJob = id => {
   };
 };
 
-const jobCompleted = url => {
+const jobCompleted = response => {
   return {
     type: JOB_COMPLETED,
-    url: url
+    job: response
   };
 };
 
@@ -113,14 +113,15 @@ const getJob = id => {
   });
 };
 
+// Polls for a job and resolves the final response object
 const pollJob = (id, ms = 300) => {
   return getJob(id).then(
     response => {
-      if (response.status === 'complete') {
-        console.log('Job is complete!');
-        return response.url;
+      if (response.status !== 'pending') {
+        console.log('Job has finished.');
+        return response;
       } else {
-        console.log('Job is not complete');
+        console.log('Job is still pending.');
         return wait(ms).then(() => pollJob(id, ms * 2));
       }
     },
@@ -134,7 +135,9 @@ export const pollForJobCompletion = id => {
   return dispatch => {
     dispatch(pollingJob(id));
     return pollJob(id).then(
-      resultUrl => dispatch(jobCompleted(resultUrl)),
+      response => {
+        dispatch(jobCompleted(response));
+      },
       error => {
         dispatch(pollingJobFailure(error));
         throw error;
