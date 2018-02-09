@@ -5,7 +5,7 @@ const mockHash = 'abcdef';
 const serverDelay = 500;
 const callsToGetJob = 3;
 const shouldFailToGetJob = false;
-const shouldReturnErroredJob = true;
+const shouldReturnErroredJob = false;
 
 const successAfterDelay = toReturn => {
   return new Promise((resolve, reject) => {

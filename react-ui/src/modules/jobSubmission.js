@@ -181,7 +181,7 @@ export default (state = initialState, action) => {
           id: action.response.id,
           url: null,
           polling: false,
-          error: null
+          status: null
         }
       };
 
@@ -208,8 +208,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         job: {
-          ...state.job,
-          url: action.url,
+          ...action.job,
           polling: false
         }
       };

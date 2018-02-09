@@ -218,7 +218,7 @@ describe('job reducer', () => {
             id: 'defghi',
             url: 'http://test.url',
             polling: false,
-            error: null
+            status: 'complete'
           }
         },
         {
@@ -262,7 +262,7 @@ describe('job reducer', () => {
         id: 'abcdef',
         url: null,
         polling: false,
-        error: null
+        status: null
       }
     });
   });
@@ -306,7 +306,7 @@ describe('job reducer', () => {
             id: 'abcdef',
             url: null,
             polling: false,
-            error: null
+            status: null
           }
         },
         {
@@ -323,7 +323,7 @@ describe('job reducer', () => {
         id: 'abcdef',
         url: null,
         polling: true,
-        error: null
+        status: null
       }
     });
   });
@@ -340,13 +340,16 @@ describe('job reducer', () => {
           job: {
             id: 'abcdef',
             url: null,
-            polling: true,
-            error: null
+            polling: true
           }
         },
         {
           type: JOB_COMPLETED,
-          url: 'http://test.url'
+          job: {
+            id: 'abcdef',
+            url: 'http://test.url',
+            status: 'complete'
+          }
         }
       )
     ).toEqual({
@@ -359,7 +362,46 @@ describe('job reducer', () => {
         id: 'abcdef',
         url: 'http://test.url',
         polling: false,
+        status: 'complete'
+      }
+    });
+  });
+
+  it('should handle JOB_COMPLETED with an error', () => {
+    expect(
+      jobReducer(
+        {
+          submission: {
+            messageInput: '',
+            submitting: false,
+            error: null
+          },
+          job: {
+            id: 'abcdef',
+            url: null,
+            polling: true
+          }
+        },
+        {
+          type: JOB_COMPLETED,
+          job: {
+            id: 'abcdef',
+            url: '',
+            status: 'error'
+          }
+        }
+      )
+    ).toEqual({
+      submission: {
+        messageInput: '',
+        submitting: false,
         error: null
+      },
+      job: {
+        id: 'abcdef',
+        url: '',
+        status: 'error',
+        polling: false
       }
     });
   });
@@ -377,7 +419,7 @@ describe('job reducer', () => {
             id: 'abcdef',
             url: null,
             polling: true,
-            error: null
+            status: null
           }
         },
         {
@@ -395,6 +437,7 @@ describe('job reducer', () => {
         id: 'abcdef',
         url: null,
         polling: false,
+        status: null,
         error: 'Job does not exist'
       }
     });
