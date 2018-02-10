@@ -41,11 +41,11 @@ pushd generated/
 youtubeOutput="${1}-source.mp4"
 youtube-dl -f mp4 -o "$youtubeOutput" "$2"
 
-# Combine the videos
-${DIR}/combine.sh \
-    "${DIR}/../video_sources/one_thing_to_say.mp4" 0 7.4 \
-    "${youtubeOutput}" ${3:-38} 3.5 \
-    "${1}.mp4"
+# Generate the video
+${DIR}/holey_moley.js \
+    "${youtubeOutput}" \
+    "${1}.mp4" \
+    ${3:0}
 
 popd
 
