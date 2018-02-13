@@ -8,9 +8,6 @@ import {
 
 const Home = props => (
   <div className="App">
-    <header className="App-header">
-      <h1 className="App-title">Meme Bot</h1>
-    </header>
     <p className="App-intro">Input a YouTube video URL:</p>
     <input
       type="text"
