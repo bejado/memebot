@@ -10,7 +10,7 @@ const Home = props => (
   <div className="center-container">
     <div className="App">
       <h2 className="App-intro">
-        Find a YouTube video of{' '}
+        Paste a YouTube link of{' '}
         <span className="underline">something ridiculous.</span>
       </h2>
       <input
@@ -18,7 +18,9 @@ const Home = props => (
         value={props.inputValue}
         onChange={e => props.handleInputChange(e.target.value)}
       />
+      <br />
       <button onClick={() => props.enqueueJob(props.inputValue)}>Go!</button>
+      <br />
       {props.shouldShowLoading ? <div>Loading...</div> : null}
       {props.videoUrl ? <video src={props.videoUrl} controls autoPlay /> : null}
       {props.error ? (

@@ -1,3 +1,29 @@
+/* Skeleton customizations */
+button,
+button:focus {
+  color: #73e4d8;
+  border-color: #73e4d8;
+}
+
+button:hover {
+  color: white;
+  border-color: white;
+}
+
+input[type='text'] {
+  background: #263b44;
+  border-color: #73e4d8;
+  width: 100%;
+}
+
+input[type='text']:active {
+  border-color: white;
+}
+
+input[type='text']:focus {
+  border-color: white;
+}
+
 body {
   background-color: #263b44;
 }
