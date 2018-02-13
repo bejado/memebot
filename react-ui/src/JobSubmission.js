@@ -7,24 +7,29 @@ import {
 } from './modules/jobSubmission';
 
 const Home = props => (
-  <div className="App">
-    <p className="App-intro">Input a YouTube video URL:</p>
-    <input
-      type="text"
-      value={props.inputValue}
-      onChange={e => props.handleInputChange(e.target.value)}
-    />
-    <button onClick={() => props.enqueueJob(props.inputValue)}>Go!</button>
-    {props.shouldShowLoading ? <div>Loading...</div> : null}
-    {props.videoUrl ? <video src={props.videoUrl} controls autoPlay /> : null}
-    {props.error ? (
-      <div>
-        <p>
-          Whoops. An error occurred :/<br />Try again later
-        </p>
-        <p>{props.error}</p>
-      </div>
-    ) : null}
+  <div className="center-container">
+    <div className="App">
+      <h2 className="App-intro">
+        Find a YouTube video of{' '}
+        <span className="underline">something ridiculous.</span>
+      </h2>
+      <input
+        type="text"
+        value={props.inputValue}
+        onChange={e => props.handleInputChange(e.target.value)}
+      />
+      <button onClick={() => props.enqueueJob(props.inputValue)}>Go!</button>
+      {props.shouldShowLoading ? <div>Loading...</div> : null}
+      {props.videoUrl ? <video src={props.videoUrl} controls autoPlay /> : null}
+      {props.error ? (
+        <div>
+          <p>
+            Whoops. An error occurred :/<br />Try again later
+          </p>
+          <p>{props.error}</p>
+        </div>
+      ) : null}
+    </div>
   </div>
 );
 
