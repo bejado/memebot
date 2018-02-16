@@ -12,7 +12,7 @@ const outputVideoPath = process.argv[3];
 const offsetSeconds = parseInt(process.argv[4], 10) || 0;
 
 const normalizeVideo = (input, output) => {
-  return `[${input}]scale=480:360:force_original_aspect_ratio=decrease,setsar=1,pad=480:360:(ow-iw)/2:(oh-ih)/2[${output}]`;
+  return `[${input}]scale=480:360:force_original_aspect_ratio=decrease,setsar=1,pad=480:360:(ow-iw)/2:(oh-ih)/2,setpts=PTS-STARTPTS[${output}]`;
 }
 
 let command = ffmpeg()
@@ -20,11 +20,11 @@ let command = ffmpeg()
   .addInput('../video_sources/SpongebobTV/television_matte.png')
   .addInput('../video_sources/SpongebobTV/intro.mp4')
   .addInput('../video_sources/SpongebobTV/outro.mp4')
+  .addInput('../video_sources/SpongebobTV/mask.png').loop()
   .videoCodec('libx264')
   .complexFilter([
     normalizeVideo('0:v', 'v0'),   // input video
-    "movie='../video_sources/SpongebobTV/mask.png':loop=0[mask]",
-    "[mask]alphaextract[a]",
+    "[4:v]alphaextract[a]",
     "[v0][a]alphamerge[final]",
     "[1:v][final]overlay[finalfinal]",
     {
