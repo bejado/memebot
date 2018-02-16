@@ -21,7 +21,7 @@ const Home = props => (
       <br />
       <button onClick={() => props.enqueueJob(props.inputValue)}>Go!</button>
       <br />
-      {props.shouldShowLoading ? <div>Loading...</div> : null}
+      {props.shouldShowLoading ? <img src="loading.svg" /> : null}
       {props.videoUrl ? <video src={props.videoUrl} controls autoPlay /> : null}
       {props.error ? (
         <div>
