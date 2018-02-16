@@ -42,7 +42,7 @@ youtubeOutput="${1}-source.mp4"
 youtube-dl -f mp4 -o "$youtubeOutput" "$2"
 
 # Generate the video
-${DIR}/holey_moley.js \
+${DIR}/spongebob_tv.js \
     "${youtubeOutput}" \
     "${1}.mp4" \
     ${3:0}

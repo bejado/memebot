@@ -16,7 +16,7 @@ const normalizeVideo = (input, output) => {
 }
 
 let command = ffmpeg()
-  .addInput(sourceVideoPath).seekInput(offsetSeconds)
+  .addInput(sourceVideoPath).seekInput(offsetSeconds).inputOptions('-t 5')
   .addInput('../video_sources/SpongebobTV/television_matte.png')
   .addInput('../video_sources/SpongebobTV/intro.mp4')
   .addInput('../video_sources/SpongebobTV/outro.mp4')
