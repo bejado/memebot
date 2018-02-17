@@ -32,7 +32,7 @@ fetchMock.post('/api/job', (url, opts) => {
   const jsonOpts = JSON.parse(opts.body);
   if (!jsonOpts.message) {
     return errorAfterDelay(400, 'A message is required');
-  } else if (jsonOpts.message === 'success') {
+  } else if (jsonOpts.message === 'https://youtube.com/success') {
     return successAfterDelay({ success: true, id: mockHash });
   } else {
     return errorAfterDelay(500, 'Something broke!');

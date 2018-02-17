@@ -1,11 +1,17 @@
 /* Skeleton customizations */
+button[disabled] {
+  color: grey;
+  border-color: grey;
+  cursor: not-allowed;
+}
+
 button,
 button:focus {
   color: #73e4d8;
   border-color: #73e4d8;
 }
 
-button:hover {
+button:hover:not([disabled]) {
   color: white;
   border-color: white;
 }

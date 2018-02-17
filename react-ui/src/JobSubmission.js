@@ -5,6 +5,7 @@ import {
   enqueueJob,
   pollForJobCompletion
 } from './modules/jobSubmission';
+import validateVideoUrl from './urlValidator';
 
 const Home = props => (
   <div className="center-container">
@@ -19,7 +20,12 @@ const Home = props => (
         onChange={e => props.handleInputChange(e.target.value)}
       />
       <br />
-      <button onClick={() => props.enqueueJob(props.inputValue)}>Go!</button>
+      <button
+        disabled={!validateVideoUrl(props.inputValue)}
+        onClick={() => props.enqueueJob(props.inputValue)}
+      >
+        Go!
+      </button>
       <br />
       {props.shouldShowLoading ? <img src="loading.svg" /> : null}
       {props.videoUrl ? <video src={props.videoUrl} controls autoPlay /> : null}
