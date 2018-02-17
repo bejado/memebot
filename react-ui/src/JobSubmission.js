@@ -10,11 +10,9 @@ import validateVideoUrl from './urlValidator';
 const Home = props => (
   <div className="center-container">
     <div className="App">
-      <h2 className="App-intro">
-        Paste a YouTube link of{' '}
-        <span className="underline">something ridiculous.</span>
-      </h2>
+      <h2 className="App-intro">What is SpongeBob watching?</h2>
       <input
+        placeholder="paste a YouTube link"
         type="text"
         value={props.inputValue}
         onChange={e => props.handleInputChange(e.target.value)}
