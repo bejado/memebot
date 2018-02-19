@@ -30,7 +30,7 @@ const Home = props => (
       {props.error ? (
         <div>
           <p>
-            Whoops. An error occurred :/<br />Try again later
+            Whoops. An error occurred 😞<br />Try again later.
           </p>
           <p>{props.error}</p>
         </div>
