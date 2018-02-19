@@ -11,7 +11,7 @@ function getJobStatus(id) {
   return pool.query(statement, [id]).then(
     result => {
       if (result.rows.length < 1) {
-        throw 'JobNotFound';
+        throw new Error('Job not found');
       }
       return result.rows[0];
     },

@@ -17,8 +17,12 @@ const app = express()
         res.json(result);
       },
       error => {
-        res.status(400);
-        res.json({ error: error });
+        if (error.message === 'Job not found') {
+          res.status(404);
+        } else {
+          res.status(500);
+        }
+        res.json({ error: error.message });
       }
     );
   })

@@ -19,7 +19,7 @@ const normalDatabase = () => {
 
 const databaseJobDoesNotExist = () => {
   jest.doMock('../database', () => ({
-    getJobStatus: jest.fn(() => Promise.reject('Job does not exist')),
+    getJobStatus: jest.fn(() => Promise.reject(new Error('Job not found'))),
     createJob: jest.fn().mockResolvedValue()
   }));
 };
@@ -59,10 +59,10 @@ describe('GET /api/job/:job_id ', () => {
     request(app)
       .get('/api/job/badjob')
       .expect('Content-Type', /json/)
-      .expect(400)
+      .expect(404)
       .end((err, res) => {
         if (err) throw err;
-        expect(res.body.error).toEqual('Job does not exist');
+        expect(res.body.error).toEqual('Job not found');
         done();
       });
   });
