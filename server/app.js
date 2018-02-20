@@ -4,13 +4,27 @@ const path = require('path');
 const crypto = require('crypto');
 const { createJob, getJobStatus } = require('./database');
 const { enqueue } = require('./queue');
+const RateLimit = require('express-rate-limit');
+
+// Rate limiter for basic API endpoints
+const apiLimiter = new RateLimit({
+  windowMs: 60 * 1000, // 1 minute window
+  max: 30,
+  delayMs: 0
+});
+
+const jobEnqueueLimiter = new RateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour window
+  max: 10,
+  message: 'Too many requests from this IP, please try again after an hour.'
+});
 
 const app = express()
   .use(express.static(path.resolve(__dirname, '../react-ui/build')))
   .use(bodyParser.json())
 
   // api
-  .get('/api/job/:job_id', (req, res) => {
+  .get('/api/job/:job_id', apiLimiter, (req, res) => {
     const job_id = req.params.job_id;
     getJobStatus(job_id).then(
       result => {
@@ -26,7 +40,7 @@ const app = express()
       }
     );
   })
-  .post('/api/job', (req, res) => {
+  .post('/api/job', jobEnqueueLimiter, (req, res) => {
     if (!req.body.message) {
       res.status(400);
       res.send('A message is required');
@@ -58,5 +72,7 @@ const app = express()
     console.log('catch all');
     res.sendFile(path.resolve(__dirname, '../react-ui/build', 'index.html'));
   });
+
+app.enable('trust proxy');
 
 module.exports = app;
