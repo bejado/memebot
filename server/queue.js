@@ -4,7 +4,7 @@ const queue = 'tasks';
 
 const enqueue = data => {
   return open.then(values => {
-    const conn = values[0];
+    const conn = values;
     var ok = conn.createChannel();
     ok = ok.then(function(ch) {
       ch.assertQueue(queue);
