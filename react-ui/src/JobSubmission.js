@@ -25,7 +25,12 @@ const Home = props => (
         Go!
       </button>
       <br />
-      {props.shouldShowLoading ? <img src="loading.svg" /> : null}
+      {props.shouldShowLoading ? (
+        <div>
+          <img src="loading.svg" />
+          <p className="loading-info">This might take a minute...</p>
+        </div>
+      ) : null}
       {props.videoUrl ? <video src={props.videoUrl} controls autoPlay /> : null}
       {props.error ? (
         <div>

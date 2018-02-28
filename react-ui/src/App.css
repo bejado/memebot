@@ -34,6 +34,11 @@ body {
   background-color: #263b44;
 }
 
+.loading-info {
+  margin-top: -50px;
+  animation: fadein 4s;
+}
+
 .App {
   text-align: center;
   font-family: 'Cabin', sans-serif;

@@ -9,6 +9,7 @@ import registerServiceWorker from './registerServiceWorker';
 
 import 'skeleton-css/css/normalize.css';
 import 'skeleton-css/css/skeleton.css';
+import './Animations.css';
 import './App.css';
 
 const target = document.getElementById('root');
