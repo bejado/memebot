@@ -114,7 +114,7 @@ const getJob = id => {
 };
 
 // Polls for a job and resolves the final response object
-const pollJob = (id, ms = 300) => {
+const pollJob = (id, ms = 3000) => {
   return getJob(id).then(
     response => {
       if (response.status !== 'pending') {
@@ -122,7 +122,7 @@ const pollJob = (id, ms = 300) => {
         return response;
       } else {
         console.log('Job is still pending.');
-        return wait(ms).then(() => pollJob(id, ms * 2));
+        return wait(ms).then(() => pollJob(id, ms));
       }
     },
     error => {
