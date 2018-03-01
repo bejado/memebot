@@ -27,7 +27,9 @@ const processJob = message => {
     },
     error => {
       updateJob(hash, 'error', '').then(() => {
+        let errorMessage = error.error || 'No error message';
         console.log(`Job ${hash} status set to error`);
+        console.log(`Error: ${errorMessage}`);
       });
     }
   );

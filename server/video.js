@@ -4,6 +4,7 @@ const url = require('url');
 const { spawn } = require('child_process');
 
 const tempDirectory = 'generated';
+const timeoutLength = 1 * 60 * 1000; // 1 minute
 
 // Create the temporary directory
 if (!fs.existsSync(tempDirectory)) {
@@ -14,12 +15,17 @@ function generateVideo(youtubeLink, id) {
   return new Promise((resolve, reject) => {
     const finalPath = path.join('generated', id + '.mp4');
     const startTime = url.parse(youtubeLink, true).query.t || 0;
-    const process = spawn(
+    const child = spawn(
       'video_scripts/generate_video.sh',
       [id, youtubeLink, startTime],
-      { stdio: 'inherit' }
+      {
+        stdio: 'inherit',
+        detached: true
+      }
     );
-    process.on('exit', code => {
+    let hasExited = false;
+    child.on('exit', code => {
+      hasExited = true;
       if (code == 0) {
         // success
         resolve(finalPath);
@@ -27,6 +33,14 @@ function generateVideo(youtubeLink, id) {
         reject({ error: 'The video generation script failed.' });
       }
     });
+    setTimeout(() => {
+      if (!hasExited) {
+        console.log('Timeout exceeded, killing child');
+        // Kill child and all subprocesses (like youtube-dl, ffmpeg, etc)
+        process.kill(-child.pid);
+        reject({ error: 'Server time exceeded. Try a shorter video.' });
+      }
+    }, timeoutLength);
   });
 }
 
